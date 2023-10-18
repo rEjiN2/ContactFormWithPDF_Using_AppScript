@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h2>Contact Us</h2>
+        <form  id="submit-form"  enctype="multipart/form-data">
+            <div id="data"></div>
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="message">Message:</label>
+                <textarea id="message" name="message" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="cv">Upload CV:</label>
+                <input type="file" id="uploadfile" name="file" accept=".pdf, .doc, .docx" required>
+            </div>
+            <div class="form-button">
+                <button id="submit-button" type="submit">Submit</button>
+                <div id="loading" class="spinner" style="display: none;"></div>
+            </div>
+        </form>
+    </div>
+    <script>
+        $('#uploadfile').on("change", function() {
+            var file = this.files[0];
+            var fr = new FileReader();
+            fr.fileName = file.name;
+            console.log(fr);
+            fr.onload = function(e) {
+                e.target.result
+                html = '<input type="hidden" name="data" value="' + e.target.result.replace(/^.*,/, '') + '" >';
+                html += '<input type="hidden" name="mimetype" value="' + e.target.result.match(/^.*(?=;)/)[0] + '" >';
+                html += '<input type="hidden" name="filename" value="' + e.target.fileName + '" >';
+                $("#data").empty().append(html);
+            }
+            fr.readAsDataURL(file);
+            console.log(fr.readAsDataURL(file));
+        });
+        </script>
+        <script>
+            document.getElementById("submit-form").addEventListener("submit", function(event) {
+                event.preventDefault();
+                var submitButton = $('#submit-button');
+                var loading = $('#loading');
+                    submitButton.prop('disabled', true);
+                loading.show();
+                $.ajax({
+                    url: "https://script.google.com/macros/s/AKfycbzdU6ivLYKcqfu3-0w-aFcSOLeo3Jma8NhXxAUjEwE3kvgBDSOoVhRHMbSqPKA8IkuSkQ/exec",
+                    data: $("#submit-form").serialize(),
+                    method: "post",
+                    success: function(response) {
+                        
+                        window.location.reload();
+                    },
+                    error: function(err) {
+                        alert("Something Error");
+                        sendButton.disabled = false;
+                    },
+                    complete: function () {
+                        submitButton.prop('disabled', false);
+                        loading.hide();
+                    }
+                });
+       
+            });
+        
+          
+        </script>
+
+
+
+
+
+     
+</body>
+</html>
